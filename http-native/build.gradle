@@ -19,13 +19,19 @@ plugins {
     id 'java'
     id 'checkstyle'
     id 'com.github.spotbugs'
+    id 'jacoco'
 }
 
 description = 'Ballerina - HTTP/WS Java Utils'
 
+configurations {
+    jacocoRuntime
+}
+
 dependencies {
     checkstyle project(':build-config:checkstyle')
     checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
+    jacocoRuntime "org.jacoco:org.jacoco.agent:${jacoco.toolVersion}:runtime"
 
     compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
     compile group: 'org.ballerinalang', name: 'ballerina-tools-api', version: "${ballerinaLangVersion}"
@@ -58,15 +64,18 @@ dependencies {
     testCompile group: 'com.mashape.unirest', name: 'unirest-java', version:"${unirestVersion}"
 }
 
-//test {
-//    useTestNG() {
-//        suites 'src/test/resources/testng.xml'
-//    }
-//    testLogging.showStandardStreams = true
-//    testLogging {
-//        events "PASSED", "FAILED", "SKIPPED"
-//    }
-//}
+test {
+   useTestNG() {
+       suites 'src/test/resources/testng.xml'
+   }
+   testLogging.showStandardStreams = true
+   testLogging {
+       events "PASSED", "FAILED", "SKIPPED"
+   }
+   jacoco {
+        enabled = true
+   }
+}
 
 checkstyle {
     toolVersion '7.8.2'
@@ -80,6 +89,25 @@ tasks.withType(Checkstyle) {
 }
 
 checkstyleMain.dependsOn(":build-config:checkstyle:downloadMultipleFiles")
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+
+// test {
+//     testLogging {
+//         showStackTraces = true
+//         showStandardStreams = true
+//         events "failed"
+//         exceptionFormat "full"
+//     }
+//     jacoco {
+//         enabled = true
+//         destinationFile = file("$buildDir/coverage-reports/jacoco.exec")
+//         includeNoLocationClasses = true
+//     }
+// }
 
 spotbugsMain {
     effort "max"
@@ -127,5 +155,33 @@ compileJava {
                 '--module-path', classpath.asPath,
         ]
         classpath = files()
+    }
+}
+
+def executeDataDirectory = "${project.rootDir.absolutePath}/http-native/build/coverage-reports/jacoco.exec"
+
+task copyJavaClassFiles(type: Copy) {
+    from("${project.buildDir}/classes") {
+        exclude 'module-info.class'
+        include '**/*.class'
+    }
+    into "${project.rootDir.absolutePath}/build/classes"
+    
+}
+
+task codeCoverageReportJ(type: JacocoReport) {
+    dependsOn(copyJavaClassFiles)
+    executionData executeDataDirectory
+    additionalClassDirs files("${project.rootDir.absolutePath}/build/classes")
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
+        html.destination = new File("${buildDir}/reports/jacoco/report.html")
+    }
+
+    onlyIf = {
+        true
     }
 }
