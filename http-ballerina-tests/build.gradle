@@ -29,7 +29,7 @@ def tomlVersion = project.version.replace("${snapshotVersion}", "")
 def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
 def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
 def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
-def artifactTestableJar = file("$project.projectDir/target/cache/ballerina/http_tests/${tomlVersion}/java11/")
+def artifactJar = file("$project.projectDir/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-2.0.0-alpha3-SNAPSHOT/repo/cache/ballerina/http/1.1.0-alpha2/java11")
 def originalConfig = ballerinaConfigFile.text
 def ballerinaDist = "build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}"
 def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
@@ -218,8 +218,8 @@ publishing {
 def executeDataDirectory= "${project.rootDir.absolutePath}/http-ballerina-tests/target/cache/tests_cache/coverage/ballerina.exec"
 
 task extractBallerinaClassFiles(type: Copy) {
-    def jars = fileTree(artifactTestableJar).findAll {
-         it.name.endsWith("-testable.jar")
+    def jars = fileTree(artifactJar).findAll {
+         it.name.endsWith(".jar")
     }
 
     jars.forEach { file ->
