@@ -245,48 +245,7 @@ task build {
     dependsOn('http-ballerina:build')
 }
 
-// def executeDataDirectoryJava = "${project.rootDir.absolutePath}/http-native/build/coverage-reports/jacoco.exec"
-// def executeDataDirectoryBal = "${project.rootDir.absolutePath}/http-ballerina-tests/target/cache/tests_cache/coverage/ballerina.exec"
-
-
-// task jacocoMergeAllExec(type: JacocoMerge){
-//     dependsOn('http-native:copyJavaClassFiles')
-//     dependsOn('http-ballerina-tests:extractBallerinaClassFiles')
-
-// }
-
-// task codeCoverageReport1(type: JacocoReport) {
-//     dependsOn('http-native:copyJavaClassFiles')
-//     dependsOn('http-ballerina-tests:extractBallerinaClassFiles')
-//     executionData executeDataDirectoryJava
-//     additionalClassDirs files("${buildDir}/classes")
-
-//     reports {
-//         xml.enabled = true
-//         html.enabled = true
-//         xml.destination = new File("${buildDir}/reports/jacoco/report1.xml")
-//         html.destination = new File("${buildDir}/reports/jacoco/report1.html")
-//     }
-
-//     onlyIf = {
-//         true
-//     }
-// }
-
-// task codeCoverageReport2(type: JacocoReport) {
-//     dependsOn('http-native:copyJavaClassFiles')
-//     dependsOn('http-ballerina-tests:extractBallerinaClassFiles')
-//     executionData executeDataDirectoryBal
-//     additionalClassDirs files("${buildDir}/classes")
-
-//     reports {
-//         xml.enabled = true
-//         html.enabled = true
-//         xml.destination = new File("${buildDir}/reports/jacoco/report2.xml")
-//         html.destination = new File("${buildDir}/reports/jacoco/report2.html")
-//     }
-
-//     onlyIf = {
-//         true
-//     }
-// }
+task codeCoverageReport{
+    dependsOn('http-ballerina-tests:codeCoverageReportBal')
+    dependsOn('http-native:codeCoverageReportJava')
+}

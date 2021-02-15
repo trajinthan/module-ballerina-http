@@ -29,7 +29,7 @@ def tomlVersion = project.version.replace("${snapshotVersion}", "")
 def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
 def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
 def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
-def artifactTestableJar = file("$project.projectDir/target/cache/${packageOrg}/${packageName}/${tomlVersion}/java11/")
+def artifactTestableJar = file("$project.projectDir/target/cache/ballerina/http_tests/${tomlVersion}/java11/")
 def originalConfig = ballerinaConfigFile.text
 def ballerinaDist = "build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}"
 def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
@@ -232,7 +232,7 @@ task extractBallerinaClassFiles(type: Copy) {
     }
 }
 
-task codeCoverageReport(type: JacocoReport) {
+task codeCoverageReportBal(type: JacocoReport) {
     dependsOn(extractBallerinaClassFiles)
     executionData executeDataDirectory
     additionalClassDirs files("${project.rootDir.absolutePath}/build/classes")

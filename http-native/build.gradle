@@ -74,6 +74,7 @@ test {
    }
    jacoco {
         enabled = true
+        destinationFile = file("$buildDir/coverage-reports/jacoco.exec")
    }
 }
 
@@ -169,7 +170,7 @@ task copyJavaClassFiles(type: Copy) {
     
 }
 
-task codeCoverageReportJ(type: JacocoReport) {
+task codeCoverageReportJava(type: JacocoReport) {
     dependsOn(copyJavaClassFiles)
     executionData executeDataDirectory
     additionalClassDirs files("${project.rootDir.absolutePath}/build/classes")
