@@ -41,7 +41,7 @@ jobs:
             name: Code Coverage JSON
             path: http-ballerina-tests/target/report/test_results.json
             if-no-files-found: ignore
-        name: Generate CodeCov report
+      - name: Generate CodeCov report
         uses: codecov/codecov-action@v1
       - name: Dispatch Dependent Module Builds
         if: github.event.action != 'stdlib-publish-snapshot'
