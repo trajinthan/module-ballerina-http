@@ -30,6 +30,7 @@ def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
 def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
 def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
 def artifactTestableJar = file("$project.projectDir/target/cache/ballerina/http_tests/1.1.0-alpha2/java11/http_tests-testable.jar")
+//def artifactJar = file("$project.projectDir/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-2.0.0-alpha3-SNAPSHOT/repo/bala/ballerina/http/1.1.0-alpha2/platform/java11/")
 def artifactJar = file("$project.projectDir/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-2.0.0-alpha3-SNAPSHOT/repo/cache/ballerina/http/1.1.0-alpha2/java11/")
 //def artifactJar = file("$project.projectDir/../http-ballerina/build/cache_parent/cache/ballerina/http/1.1.0-alpha2/java11/http.jar")
 def originalConfig = ballerinaConfigFile.text
@@ -231,33 +232,36 @@ task extractBallerinaClassFiles(type: Copy) {
         into "${project.rootDir.absolutePath}/build/classes"
     }
 
-    def testablejars = fileTree(artifactTestableJar).findAll {
-         it.name.endsWith("-testable.jar")
-    }
+    // def testablejars = fileTree(artifactTestableJar).findAll {
+    //      it.name.endsWith("-testable.jar")
+    // }
 
-    testablejars.forEach { file ->
-        println(file.name)
-        from zipTree(file).matching {
-            exclude '**/tests/*'
-            include '**/*.class'
-        }
-        into "${project.rootDir.absolutePath}/build/classes"
-    }
+    // testablejars.forEach { file ->
+    //     println(file.name)
+    //     from zipTree(file).matching {
+    //         exclude '**/tests/*'
+    //         include '**/*.class'
+    //     }
+    //     into "${project.rootDir.absolutePath}/build/classes"
+    // }
 
 }
 
 task codeCoverageReportBal(type: JacocoReport) {
     dependsOn(extractBallerinaClassFiles)
-    //executionData artifactCodeCoverageReport
-    additionalClassDirs files("${project.rootDir.absolutePath}/build/classes","../http-native/build/classes")
+    executionData artifactCodeCoverageReport
+    additionalClassDirs files("${project.rootDir.absolutePath}/build/classes")
+    
+    //additionalClassDirs files("${project.rootDir.absolutePath}/build/classes","../http-native/build/classes")
     //additionalSourceDirs files("/home/rajinthan/Documents/ballerina/http/1_1_0-alpha2") 
 
-    executionData files(artifactCodeCoverageReport,"../http-native/build/jacoco/test.exec")
+    //executionData files(artifactCodeCoverageReport,"../http-native/build/jacoco/test.exec")
 
     reports {
         xml.enabled = true
         html.enabled = true
         xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
+        //xml.destination = new File("../http-ballerina/reports/jacoco/report.xml")
         html.destination = new File("${buildDir}/reports/jacoco/report.html")
     }
 
