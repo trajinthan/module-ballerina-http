@@ -29,7 +29,8 @@ def tomlVersion = project.version.replace("${snapshotVersion}", "")
 def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
 def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
 def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
-def artifactJar = file("$project.projectDir/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-2.0.0-alpha3-SNAPSHOT/repo/cache/ballerina/http/1.1.0-alpha2/java11")
+def artifactTestableJar = file("$project.projectDir/target/cache/ballerina/http_tests/1.1.0-alpha2/java11/http_tests-testable.jar")
+def artifactJar = file("$project.projectDir/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-2.0.0-alpha3-SNAPSHOT/repo/cache/ballerina/http/1.1.0-alpha2/java11/")
 //def artifactJar = file("$project.projectDir/../http-ballerina/build/cache_parent/cache/ballerina/http/1.1.0-alpha2/java11/http.jar")
 def originalConfig = ballerinaConfigFile.text
 def ballerinaDist = "build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}"
@@ -216,8 +217,6 @@ publishing {
     }
 }
 
-def executeDataDirectory= "${project.rootDir.absolutePath}/http-ballerina-tests/target/cache/tests_cache/coverage/ballerina.exec"
-
 task extractBallerinaClassFiles(type: Copy) {
     def jars = fileTree(artifactJar).findAll {
          it.name.endsWith(".jar")
@@ -231,11 +230,25 @@ task extractBallerinaClassFiles(type: Copy) {
         }
         into "${project.rootDir.absolutePath}/build/classes"
     }
+
+    def testablejars = fileTree(artifactTestableJar).findAll {
+         it.name.endsWith("-testable.jar")
+    }
+
+    testablejars.forEach { file ->
+        println(file.name)
+        from zipTree(file).matching {
+            exclude '**/tests/*'
+            include '**/*.class'
+        }
+        into "${project.rootDir.absolutePath}/build/classes"
+    }
+
 }
 
 task codeCoverageReportBal(type: JacocoReport) {
     dependsOn(extractBallerinaClassFiles)
-    executionData executeDataDirectory
+    executionData artifactCodeCoverageReport
     additionalClassDirs files("${project.rootDir.absolutePath}/build/classes")
 
     reports {

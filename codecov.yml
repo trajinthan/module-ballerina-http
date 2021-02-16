@@ -1,0 +1,3 @@
+fixes:
+  - "ballerina/http/*/::http-ballerina/" 
+  - "ballerina/http_tests/*/"::http-ballerina-tests/"

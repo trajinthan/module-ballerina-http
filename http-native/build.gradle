@@ -72,10 +72,10 @@ test {
    testLogging {
        events "PASSED", "FAILED", "SKIPPED"
    }
-   jacoco {
-        enabled = true
-        destinationFile = file("$buildDir/coverage-reports/jacoco.exec")
-   }
+//    jacoco {
+//         enabled = true
+//         destinationFile = file("$buildDir/coverage-reports/jacoco.exec")
+//    }
 }
 
 checkstyle {
@@ -159,7 +159,7 @@ compileJava {
     }
 }
 
-def executeDataDirectory = "${project.rootDir.absolutePath}/http-native/build/coverage-reports/jacoco.exec"
+def executeDataDirectory = "${project.rootDir.absolutePath}/http-native/build/jacoco/test.exec"
 
 task copyJavaClassFiles(type: Copy) {
     from("${project.buildDir}/classes") {
