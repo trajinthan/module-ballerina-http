@@ -248,8 +248,11 @@ task extractBallerinaClassFiles(type: Copy) {
 
 task codeCoverageReportBal(type: JacocoReport) {
     dependsOn(extractBallerinaClassFiles)
-    executionData artifactCodeCoverageReport
-    additionalClassDirs files("${project.rootDir.absolutePath}/build/classes")
+    //executionData artifactCodeCoverageReport
+    additionalClassDirs files("${project.rootDir.absolutePath}/build/classes","../http-native/build/classes")
+    //additionalSourceDirs files("/home/rajinthan/Documents/ballerina/http/1_1_0-alpha2") 
+
+    executionData files(artifactCodeCoverageReport,"../http-native/build/jacoco/test.exec")
 
     reports {
         xml.enabled = true

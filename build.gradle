@@ -247,5 +247,5 @@ task build {
 
 task codeCoverageReport{
     dependsOn('http-ballerina-tests:codeCoverageReportBal')
-    dependsOn('http-native:codeCoverageReportJava')
+    //dependsOn('http-native:codeCoverageReportJava')
 }
