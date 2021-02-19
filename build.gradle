@@ -246,6 +246,6 @@ task build {
 }
 
 task codeCoverageReport(type: JacocoReport) {
-    dependsOn('http-ballerina-tests:codeCoverageReportBal')
+    //dependsOn('http-ballerina-tests:codeCoverageReportBal')
     dependsOn('http-native:codeCoverageReportJava')
 }
