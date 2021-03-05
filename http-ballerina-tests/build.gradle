@@ -216,35 +216,3 @@ publishing {
         }
     }
 }
-
-task extractBallerinaClassFiles(type: Copy) {
-    def jars = fileTree(artifactJar).findAll {
-        it.name.endsWith(".jar")
-    }
-
-    jars.forEach { file ->
-        from zipTree(file).matching {
-            exclude '**/tests/*'
-            include '**/*.class'
-        }
-        into "${project.rootDir.absolutePath}/build/classes"
-    }
-}
-
-task codeCoverageReportBal(type: JacocoReport) {
-    dependsOn(':http-ballerina:build')
-    dependsOn(':http-ballerina-tests:build')
-    dependsOn(extractBallerinaClassFiles)
-    additionalClassDirs files("${project.rootDir.absolutePath}/build/classes")
-
-    reports {
-        xml.enabled = true
-        html.enabled = true
-        xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
-        html.destination = new File("${buildDir}/reports/jacoco/report.html")
-    }
-
-    onlyIf = {
-        true
-    }
-} 
